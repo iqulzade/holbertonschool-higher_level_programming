@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 if number == 0:
-    print(f"{number} is zero")
+    print("is zero")
 elif number > 0:
-    print(f"{number} is positive")
+    print("is positive")
 else:
-    print(f"{number} is negative")
+    print("is negative")
 
