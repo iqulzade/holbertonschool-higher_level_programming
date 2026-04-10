@@ -7,4 +7,3 @@ def uppercase(str):
             ),
             end=""
         )
-    print()
