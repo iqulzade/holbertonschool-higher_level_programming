@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """
-Fetches a URL and displays the response body or error code if HTTP error occurs.
+Fetches a URL and displays the response body.
+
+Prints error code if an HTTP error occurs.
 """
 
 import urllib.request
