@@ -87,12 +87,22 @@ def products():
     if product_id:
         try:
             product_id = int(product_id)
-            data = [p for p in data if p["id"] == product_id]
-        except ValueError:
-            data = []
 
-    return render_template('product_display.html',
-                           products=data)
+            filtered = [p for p in data if p["id"] == product_id]
+
+            if not filtered:
+                return render_template(
+                    'product_display.html',
+                    error="Product not found"
+                )
+
+            data = filtered
+
+        except ValueError:
+            return render_template(
+                'product_display.html',
+                error="Product not found"
+            )
 
 
 

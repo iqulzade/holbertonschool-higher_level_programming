@@ -8,8 +8,8 @@
     <h1>Product List</h1>
 
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% else %}
+        <p>{{ error }}</p>
+    {% elif products %}
         <table border="1">
             <tr>
                 <th>ID</th>
