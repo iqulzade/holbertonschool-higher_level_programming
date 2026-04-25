@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sqlite3
 import json
 import csv
@@ -46,11 +47,17 @@ def read_csv():
     return products
 
 
-def read_sql():
+def read_sql(product_id=None):
     conn = sqlite3.connect('products.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    cursor.execute('SELECT id, name, category, price FROM Products')
+    if product_id is not None:
+        cursor.execute(
+            'SELECT id, name, category, price FROM Products WHERE id = ?',
+            (product_id,)
+        )
+    else:
+        cursor.execute('SELECT id, name, category, price FROM Products')
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
@@ -59,6 +66,7 @@ def read_sql():
 @app.route('/products')
 def products():
     source = request.args.get('source')
+    product_id = request.args.get('id', type=int)
 
     try:
         if source == 'json':
@@ -66,7 +74,7 @@ def products():
         elif source == 'csv':
             products_data = read_csv()
         elif source == 'sql':
-            products_data = read_sql()
+            products_data = read_sql(product_id)
         else:
             return render_template('product_display.html', error="Wrong source")
     except sqlite3.Error as e:
@@ -78,6 +86,14 @@ def products():
     except Exception as e:
         return render_template('product_display.html',
                                error=f"Error: {str(e)}")
+
+    # Filter by id for json/csv sources too
+    if product_id is not None and source in ('json', 'csv'):
+        products_data = [p for p in products_data if int(p.get('id', -1)) == product_id]
+
+    if product_id is not None and not products_data:
+        return render_template('product_display.html',
+                               error="Product not found")
 
     return render_template('product_display.html', products=products_data)
 
