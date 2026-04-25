@@ -68,6 +68,7 @@ def load_sqlite():
 @app.route('/products')
 def products():
     source = request.args.get('source')
+    product_id = request.args.get('id')
 
     if source == 'json':
         data = load_json()
@@ -82,6 +83,13 @@ def products():
     if data is None:
         return render_template('product_display.html',
                                error="Error loading data")
+
+    if product_id:
+        try:
+            product_id = int(product_id)
+            data = [p for p in data if p["id"] == product_id]
+        except ValueError:
+            data = []
 
     return render_template('product_display.html',
                            products=data)
